@@ -47,12 +47,16 @@ app.get('/help', (req, res) => {
 
 app.get('/weather', (req, res) => {
     if (!req.query.address){
-        return res.send({
-            error: 'You must provide an address!'
-        })
+        if (req.query.latitude && req.query.longitude) {
+            // Do nothing
+        } else {
+            return res.send({
+                error: 'You must provide an address!'
+            })
+        }        
     }
 
-    geocode(req.query.address, (error, {latitude, longitude, location} = {}) => {
+    geocode(req.query.address, req.query.longitude, req.query.latitude, (error, {latitude, longitude, location} = {}) => {
         if (error){
             return res.send({error})
         }
@@ -99,6 +103,6 @@ app.get('*', (req, res) => {
 });
   
 app.listen(port, ()=> {
-  console.log('Server is running on' + port);
+  console.log('Server is running on ' + port);
 });
   
